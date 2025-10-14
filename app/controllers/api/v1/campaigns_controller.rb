@@ -6,15 +6,19 @@ module Api
       def index
         # BUG 8:
         campaigns = if params[:status]
-                      Campaign.find_by(status: params[:status])
+                      Campaign.where(status: params[:status])
                     else
                       Campaign.all
                     end
 
         # BUG 7:
+        # TODO: Add task_count to each campaign in response once Task model exists.
+        #       Will need to map over campaigns and merge task_count: campaign.tasks.size
         render json: { campaigns: campaigns }
       end
 
+      # TODO: Include tasks in JSON response once Task model exists.
+      #       Consider eager loading in set_campaign to avoid N+1 queries.
       def show
         # BUG 6:
         render json: { campaign: @campaign }
