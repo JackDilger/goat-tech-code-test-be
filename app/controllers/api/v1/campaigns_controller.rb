@@ -17,11 +17,9 @@ module Api
         render json: { campaigns: campaigns }
       end
 
-      # TODO: Include tasks in JSON response once Task model exists.
-      #       Consider eager loading in set_campaign to avoid N+1 queries.
       def show
         # BUG 6:
-        render json: { campaign: @campaign }
+        render json: { campaign: @campaign.as_json.merge(tasks: @campaign.tasks) }
       end
 
       def create
@@ -50,7 +48,7 @@ module Api
       private
 
       def set_campaign
-        @campaign = Campaign.find(params[:id])
+        @campaign = Campaign.includes(:tasks).find(params[:id])
       rescue ActiveRecord::RecordNotFound
         render json: { error: 'Campaign not found' }, status: :not_found
       end
