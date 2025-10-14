@@ -12,9 +12,10 @@ module Api
                     end
 
         # BUG 7:
-        # TODO: Add task_count to each campaign in response once Task model exists.
-        #       Will need to map over campaigns and merge task_count: campaign.tasks.size
-        render json: { campaigns: campaigns }
+        campaigns_with_count = campaigns.map do |campaign|
+          campaign.as_json.merge(task_count: campaign.tasks.size)
+        end
+        render json: { campaigns: campaigns_with_count }
       end
 
       def show
