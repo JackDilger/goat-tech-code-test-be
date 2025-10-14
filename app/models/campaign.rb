@@ -6,5 +6,5 @@ class Campaign < ApplicationRecord
   has_many :tasks, dependent: :destroy
 
   # BUG 3:
-  enum status: [:active, :completed, :archived]
+  enum status: { active: 0, completed: 1, archived: 2 }
 end
