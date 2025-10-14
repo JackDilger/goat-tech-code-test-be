@@ -53,7 +53,7 @@ module Api
 
       def campaign_params
         # BUG 5:
-        params.require(:campaign).permit(:name, :description)
+        params.require(:campaign).permit(:name, :description, :status)
       end
     end
   end
