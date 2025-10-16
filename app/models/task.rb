@@ -1,5 +1,5 @@
 class Task < ApplicationRecord
-  belongs_to :campaign
+  belongs_to :campaign, counter_cache: true
   belongs_to :created_by, class_name: 'User', optional: true
   belongs_to :assigned_to, class_name: 'User', optional: true
 

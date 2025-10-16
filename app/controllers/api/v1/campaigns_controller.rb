@@ -13,7 +13,7 @@ module Api
 
         # BUG 7:
         campaigns_with_count = campaigns.map do |campaign|
-          campaign.as_json.merge(task_count: campaign.tasks.size)
+          campaign.as_json.merge(task_count: campaign.tasks_count)
         end
         render json: { campaigns: campaigns_with_count }
       end
