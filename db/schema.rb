@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_01_01_000002) do
+ActiveRecord::Schema[7.1].define(version: 2025_10_16_084918) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -20,6 +20,26 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_01_000002) do
     t.integer "status", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "tasks_count", default: 0, null: false
+  end
+
+  create_table "tasks", force: :cascade do |t|
+    t.string "title", limit: 200, null: false
+    t.text "description"
+    t.integer "status", default: 0, null: false
+    t.integer "priority", default: 1, null: false
+    t.date "due_date"
+    t.bigint "campaign_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "created_by_id"
+    t.bigint "assigned_to_id"
+    t.index ["assigned_to_id"], name: "index_tasks_on_assigned_to_id"
+    t.index ["campaign_id"], name: "index_tasks_on_campaign_id"
+    t.index ["created_by_id"], name: "index_tasks_on_created_by_id"
+    t.index ["due_date"], name: "index_tasks_on_due_date"
+    t.index ["priority"], name: "index_tasks_on_priority"
+    t.index ["status"], name: "index_tasks_on_status"
   end
 
   create_table "users", force: :cascade do |t|
@@ -30,4 +50,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_01_000002) do
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 
+  add_foreign_key "tasks", "campaigns"
+  add_foreign_key "tasks", "users", column: "assigned_to_id"
+  add_foreign_key "tasks", "users", column: "created_by_id"
 end

@@ -1,11 +1,10 @@
 class Campaign < ApplicationRecord
   # BUG 1:
-  validates :description, presence: true
-  validates :name, length: { maximum: 100 }
+  validates :name, presence: true, length: { maximum: 100 }
 
   # BUG 2:
-  has_one :tasks
+  has_many :tasks, dependent: :destroy
 
   # BUG 3:
-  enum status: [:active, :completed, :archived]
+  enum status: { active: 0, completed: 1, archived: 2 }
 end

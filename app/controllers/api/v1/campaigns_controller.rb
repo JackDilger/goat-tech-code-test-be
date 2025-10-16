@@ -6,18 +6,21 @@ module Api
       def index
         # BUG 8:
         campaigns = if params[:status]
-                      Campaign.find_by(status: params[:status])
+                      Campaign.where(status: params[:status])
                     else
                       Campaign.all
                     end
 
         # BUG 7:
-        render json: { campaigns: campaigns }
+        campaigns_with_count = campaigns.map do |campaign|
+          campaign.as_json.merge(task_count: campaign.tasks_count)
+        end
+        render json: { campaigns: campaigns_with_count }
       end
 
       def show
         # BUG 6:
-        render json: { campaign: @campaign }
+        render json: { campaign: @campaign.as_json.merge(tasks: @campaign.tasks) }
       end
 
       def create
@@ -46,14 +49,14 @@ module Api
       private
 
       def set_campaign
-        @campaign = Campaign.find(params[:id])
+        @campaign = Campaign.includes(:tasks).find(params[:id])
       rescue ActiveRecord::RecordNotFound
         render json: { error: 'Campaign not found' }, status: :not_found
       end
 
       def campaign_params
         # BUG 5:
-        params.require(:campaign).permit(:name, :description)
+        params.require(:campaign).permit(:name, :description, :status)
       end
     end
   end
